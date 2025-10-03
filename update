@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract ClientCount {
+
+    // Structure représentant une vente de baguettes
+    struct Sale {
+        uint256 baguettesSold; // Nombre de baguettes vendues lors de la vente
+        uint256 day; // Le jour ou l'enregistrement de la vente
+    }
+
+    // Liste des ventes de baguettes
+    Sale[] public sales;
+
+    // Nombre moyen de baguettes qu'un client achète
+    uint256 public baguettesPerClient;
+
+    // Constructeur pour initialiser le nombre moyen de baguettes qu'un client achète
+    constructor(uint256 _baguettesPerClient) {
+        baguettesPerClient = _baguettesPerClient;
+    }
+
+    // Ajouter une vente de baguettes
+    function addSale(uint256 baguettesSold, uint256 day) public {
+        require(baguettesSold > 0, "Le nombre de baguettes vendues doit etre positif");
+        
+        // Ajouter la vente à la liste des ventes
+        sales.push(Sale(baguettesSold, day));
+    }
+
+    // Calculer le nombre moyen de clients
+    function calculateAverageClients() public view returns (uint256) {
+        uint256 totalBaguettes = 0;
+
+        // Calculer le total des baguettes vendues
+        for (uint256 i = 0; i < sales.length; i++) {
+            totalBaguettes += sales[i].baguettesSold;
+        }
+
+        // Eviter la division par zéro si aucune vente n'a été ajoutée
+        require(totalBaguettes > 0, "Aucune vente n'a ete ajoutee");
+
+        // Calculer le nombre moyen de clients
+        uint256 averageClients = totalBaguettes / baguettesPerClient;
+
+        return averageClients;
+    }
+
+    // Voir le nombre total de ventes enregistrées
+    function getSalesCount() public view returns (uint256) {
+        return sales.length;
+    }
+}
